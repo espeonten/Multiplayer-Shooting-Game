@@ -3,14 +3,16 @@
 //add bullets
 //add more platforms
 
-var p1, p1I
-var p2, p2I
+var p1, p1I, p12I
+var p2, p2I, p22I
 var edges
 var platform1, platform2, platform3, platform4, platform5, pGroup
 
 function preload() {
-  p1I = loadImage("p1.png")
-  p2I = loadImage("p2.png")
+  p1I = loadAnimation("p1.png")
+  p2I = loadAnimation("p2.png")
+  p12I = loadAnimation("p1_2.png")
+  p22I = loadAnimation("p2_2.png")
 }
 
 function setup() {
@@ -19,11 +21,13 @@ function setup() {
   edges = createEdgeSprites()
 
   p1 = createSprite(width/4, height)
-  p1.addImage(p1I)
+  p1.addAnimation("p1 right", p1I)
+  p1.addAnimation("p1 left", p12I)
   p1.scale = 0.3
 
   p2 = createSprite(width - 300, height)
-  p2.addImage(p2I)
+  p2.addAnimation("p2 left", p2I)
+  p2.addAnimation("p2 right", p22I)
   p2.scale = 0.3
 
   createPlatforms()
@@ -40,9 +44,11 @@ function draw() {
 
   if(keyDown("a")) {
     p1.x-= 6
+    p1.changeAnimation("p1 left")
   }
   if(keyDown("d")) {
     p1.x+= 6
+    p1.changeAnimation("p1 right")
   }
   if(keyDown("w") && (p1.collide(edges[3]) || p1.collide(pGroup))) {
     p1.velocityY= -13
@@ -51,9 +57,11 @@ function draw() {
 
   if(keyDown("left")) {
     p2.x-= 6
+    p2.changeAnimation("p2 left")
   }
   if(keyDown("right")) {
     p2.x+= 6
+    p2.changeAnimation("p2 right")
   }
   if(keyDown("up") && (p2.collide(edges[3]) || p2.collide(pGroup))) {
     p2.velocityY= -13
