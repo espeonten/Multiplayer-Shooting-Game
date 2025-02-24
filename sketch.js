@@ -1,7 +1,6 @@
 //fix direction facing
 //put patterns on background and platforms using loop
 //add bullets
-//add more platforms
 
 var p1, p1I, p12I
 var p2, p2I, p22I
@@ -38,9 +37,6 @@ function draw() {
   console.log(mouseX, mouseY)
   background("white")
 
-  
-  p1.velocityY += 0.2
-  p2.velocityY += 0.2
 
   if(keyDown("a")) {
     p1.x-= 6
@@ -55,6 +51,10 @@ function draw() {
   }
   
 
+  
+  if(keyDown("up") && (p2.collide(edges[3]) || p2.collide(pGroup))) {
+    p2.velocityY= -13
+  }
   if(keyDown("left")) {
     p2.x-= 6
     p2.changeAnimation("p2 left")
@@ -63,12 +63,15 @@ function draw() {
     p2.x+= 6
     p2.changeAnimation("p2 right")
   }
-  if(keyDown("up") && (p2.collide(edges[3]) || p2.collide(pGroup))) {
-    p2.velocityY= -13
-  }
 
   collidePlatforms()
-  p1.collide(edges)
+  if(p1.isTouching(edges)) {
+    p1.velocityY = 0
+    p1.velocityX = 0
+  }
+  //p1.collide(edges)
   p2.collide(edges)
+  p1.velocityY += 0.2
+  p2.velocityY += 0.2
   drawSprites()
 }
