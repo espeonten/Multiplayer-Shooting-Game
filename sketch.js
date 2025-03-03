@@ -7,6 +7,8 @@ var bullet
 var ableToShoot = true
 var edges
 var platform1, platform2, platform3, platform4, platform5, pGroup
+var p1facing = "right"
+var p2facing = "left"
 
 function preload() {
   p1I = loadAnimation("p1.png")
@@ -42,10 +44,12 @@ function draw() {
   if(keyDown("a")) {
     p1.x-= 6
     p1.changeAnimation("p1 left")
+    p1facing = "left"
   }
   if(keyDown("d")) {
     p1.x+= 6
     p1.changeAnimation("p1 right")
+    p1facing = "right"
   }
   if(keyDown("w") && (p1.collide(edges[3]) || p1.collide(pGroup))) {
     p1.velocityY= -13
@@ -59,10 +63,12 @@ function draw() {
   if(keyDown("left")) {
     p2.x-= 6
     p2.changeAnimation("p2 left")
+    p2facing = "left"
   }
   if(keyDown("right")) {
     p2.x+= 6
     p2.changeAnimation("p2 right")
+    p2facing = "right"
   }
 
   if(frameCount % 10 == 0) {
@@ -83,12 +89,31 @@ function draw() {
 
 function shootBullet() {
   if(keyDown("s") && ableToShoot == true) {
-    bullet = createSprite(width/2,height/2, 20, 10)
-    bullet.x = p1.x + 60
-    bullet.y = p1.y
-    bullet.velocityX = 30
+    if(p1facing == "right") {
+      bullet = createSprite(width/2,height/2, 20, 10)
+      bullet.x = p1.x + 60
+      bullet.y = p1.y
+      bullet.velocityX = 30
+    }
+    else if(p1facing == "left") {
+      bullet = createSprite(width/2,height/2, 20, 10)
+      bullet.x = p1.x - 60
+      bullet.y = p1.y
+      bullet.velocityX = -30
+    }
   }
-  if(keyDown("up") && ableToShoot == true) {
-    
+  if(keyDown("down") && ableToShoot == true) {
+    if(p2facing == "right") {
+      bullet = createSprite(width/2,height/2, 20, 10)
+      bullet.x = p2.x + 60
+      bullet.y = p2.y
+      bullet.velocityX = 30
+    }
+    else if(p2facing == "left") {
+      bullet = createSprite(width/2,height/2, 20, 10)
+      bullet.x = p2.x - 60
+      bullet.y = p2.y
+      bullet.velocityX = -30
+    }
   }
 }
