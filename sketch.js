@@ -112,16 +112,30 @@ function draw() {
   }
 
   if(p1Score == 120) {
+    background("green")
+    fill("red")
+    textSize(75)
+    text("Orange Player WINS!", width/2 - 250, height/2)
     pGroup.destroyEach()
     p1.destroy()
+    p2.destroy()
     p1healthRedHealthBar.destroy()
     p1healthGreenHealthBar.destroy()
+    p2healthRedHealthBar.destroy()
+    p2healthGreenHealthBar.destroy()
   }
   if(p2Score == 120) {
+    background("green")
+    fill("red")
+    textSize(75)
+    text("Green Player WINS!", width/2 - 250, height/2)
     pGroup.destroyEach()
+    p1.destroy()
     p2.destroy()
     p2healthRedHealthBar.destroy()
     p2healthGreenHealthBar.destroy()
+    p1healthRedHealthBar.destroy()
+    p1healthGreenHealthBar.destroy()
   }
   
   collidePlatforms()
