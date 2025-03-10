@@ -3,6 +3,7 @@
 
 var p1, p1I, p12I
 var p2, p2I, p22I
+var shootSound
 var bullet
 var ableToShoot = true
 var edges
@@ -16,12 +17,15 @@ var p2healthRedHealthBarWidth = 1
 var bGroup
 var p1Score = 1
 var p2Score = 1
+var level = 1
+var winner
 
 function preload() {
   p1I = loadAnimation("p1.png")
   p2I = loadAnimation("p2.png")
   p12I = loadAnimation("p1_2.png")
   p22I = loadAnimation("p2_2.png")
+  shootSound = loadSound("shootSound.mp3")
 }
 
 function setup() {
@@ -59,7 +63,8 @@ function setup() {
 
 //runs continuously
 function draw() {
-  console.log(mouseX, mouseY)
+  //console.log(mouseX, mouseY)
+  console.log(level)
   background("white")
 
   p1healthGreenHealthBar.x = p1.x
@@ -89,7 +94,6 @@ function draw() {
     p1.velocityY= -13
   }
   
-
   if(keyDown("up") && (p2.collide(edges[3]) || p2.collide(pGroup))) {
     p2.velocityY= -13
   }
@@ -111,7 +115,23 @@ function draw() {
     ableToShoot=false
   }
 
-  if(p1Score == 120) {
+  if(p1Score >= 120 && level == 1) {
+    level = 2
+    p1.x = width/4
+    p2.x = width - 300
+    winner = "p2"
+    p1Score = 0.5
+    p2Score = 0.5
+  }
+  if(p2Score >= 120 && level == 1) {
+    level = 2
+    p1.x = width/4
+    p2.x = width - 300
+    winner = "p1"
+    p1Score = 0.5
+    p2Score = 0.5
+  }
+  if(p1Score >= 120 && level == 2) {
     background("green")
     fill("red")
     textSize(75)
@@ -124,7 +144,7 @@ function draw() {
     p2healthRedHealthBar.destroy()
     p2healthGreenHealthBar.destroy()
   }
-  if(p2Score == 120) {
+  if(p2Score >= 120 && level == 2) {
     background("green")
     fill("red")
     textSize(75)
@@ -132,10 +152,10 @@ function draw() {
     pGroup.destroyEach()
     p1.destroy()
     p2.destroy()
-    p2healthRedHealthBar.destroy()
-    p2healthGreenHealthBar.destroy()
     p1healthRedHealthBar.destroy()
     p1healthGreenHealthBar.destroy()
+    p2healthRedHealthBar.destroy()
+    p2healthGreenHealthBar.destroy()
   }
   
   collidePlatforms()
@@ -145,45 +165,128 @@ function draw() {
   p2.velocityY += 0.2
   shootBullet()
   if(p1.isTouching(bGroup)) {
-    p1Score += 0.5
+    p1Score += 2.5
+    bGroup[0].destroy()
   }
   if(p2.isTouching(bGroup)) {
-    p2Score += 0.5
+    p2Score += 2.5
+    bGroup[0].destroy()
   }
   drawSprites()
 }
 
 function shootBullet() {
-  if(keyDown("s") && ableToShoot == true && p1Score < 120 && p2Score < 120) {
-    if(p1facing == "right") {
-      bullet = createSprite(width/2,height/2, 20, 10)
-      bullet.x = p1.x + 100
-      bullet.y = p1.y
-      bullet.velocityX = 30
-      bGroup.add(bullet)
+  if (level == 1) {
+    if(keyDown("s") && ableToShoot == true && p1Score < 120 && p2Score < 120) {
+      shootSound.play()
+      if(p1facing == "right") {
+        bullet = createSprite(width/2,height/2, 20, 10)
+        bullet.x = p1.x + 100
+        bullet.y = p1.y
+        bullet.velocityX = 30
+        bGroup.add(bullet)
+      }
+      else if(p1facing == "left") {
+        bullet = createSprite(width/2,height/2, 20, 10)
+        bullet.x = p1.x - 100
+        bullet.y = p1.y
+        bullet.velocityX = -30
+        bGroup.add(bullet)
+      }
     }
-    else if(p1facing == "left") {
-      bullet = createSprite(width/2,height/2, 20, 10)
-      bullet.x = p1.x - 100
-      bullet.y = p1.y
-      bullet.velocityX = -30
-      bGroup.add(bullet)
+    if(keyDown("down") && ableToShoot == true && p2Score < 120 && p1Score < 120) {
+      shootSound.play()
+      if(p2facing == "right") {
+        bullet = createSprite(width/2,height/2, 20, 10)
+        bullet.x = p2.x + 100
+        bullet.y = p2.y
+        bullet.velocityX = 30
+        bGroup.add(bullet)
+      }
+      else if(p2facing == "left") {
+        bullet = createSprite(width/2,height/2, 20, 10)
+        bullet.x = p2.x - 100
+        bullet.y = p2.y
+        bullet.velocityX = -30
+        bGroup.add(bullet)
+      }
     }
   }
-  if(keyDown("down") && ableToShoot == true && p2Score < 120 && p1Score < 120) {
-    if(p2facing == "right") {
-      bullet = createSprite(width/2,height/2, 20, 10)
-      bullet.x = p2.x + 100
-      bullet.y = p2.y
-      bullet.velocityX = 30
-      bGroup.add(bullet)
+  else if(level == 2) {
+    if(winner == "p1"){
+      if(keyDown("s") && ableToShoot == true && p1Score < 120 && p2Score < 120) {
+        shootSound.play()
+        if(p1facing == "right") {
+          bullet = createSprite(width/2,height/2, 30, 20)
+          bullet.shapeColor = "red"
+          bullet.x = p1.x + 120
+          bullet.y = p1.y
+          bullet.velocityX = 50
+          bGroup.add(bullet)
+        }
+        else if(p1facing == "left") {
+          bullet = createSprite(width/2,height/2, 30, 20)
+          bullet.shapeColor = "red"
+          bullet.x = p1.x - 120
+          bullet.y = p1.y
+          bullet.velocityX = -50
+          bGroup.add(bullet)
+        }
+      }
+      if(keyDown("down") && ableToShoot == true && p2Score < 120 && p1Score < 120) {
+        shootSound.play()
+        if(p2facing == "right") {
+          bullet = createSprite(width/2,height/2, 20, 10)
+          bullet.x = p2.x + 100
+          bullet.y = p2.y
+          bullet.velocityX = 30
+          bGroup.add(bullet)
+        }
+        else if(p2facing == "left") {
+          bullet = createSprite(width/2,height/2, 20, 10)
+          bullet.x = p2.x - 100
+          bullet.y = p2.y
+          bullet.velocityX = -30
+          bGroup.add(bullet)
+        }
+      }
     }
-    else if(p2facing == "left") {
-      bullet = createSprite(width/2,height/2, 20, 10)
-      bullet.x = p2.x - 100
-      bullet.y = p2.y
-      bullet.velocityX = -30
-      bGroup.add(bullet)
+    else if(winner == "p2"){
+      if(keyDown("s") && ableToShoot == true && p1Score < 120 && p2Score < 120) {
+        shootSound.play()
+        if(p1facing == "right") {
+          bullet = createSprite(width/2,height/2, 20, 10)
+          bullet.x = p1.x + 100
+          bullet.y = p1.y
+          bullet.velocityX = 30
+          bGroup.add(bullet)
+        }
+        else if(p1facing == "left") {
+          bullet = createSprite(width/2,height/2, 20, 10)
+          bullet.x = p1.x - 100
+          bullet.y = p1.y
+          bullet.velocityX = -30
+          bGroup.add(bullet)
+        }
+      }
+      if(keyDown("down") && ableToShoot == true && p2Score < 120 && p1Score < 120) {
+        shootSound.play()
+        if(p2facing == "right") {
+          bullet = createSprite(width/2,height/2, 30, 20)
+          bullet.shapeColor = "red"
+          bullet.x = p2.x + 120
+          bullet.y = p2.y
+          bullet.velocityX = 50
+          bGroup.add(bullet)
+        }
+        else if(p2facing == "left") {
+          bullet = createSprite(width/2,height/2, 30, 20)
+          bullet.shapeColor = "red"
+          bullet.x = p2.x - 120
+          bullet.y = p2.y
+          bullet.velocityX = -50
+          bGroup.add(bullet)
+        }
     }
   }
-}
+}}
